@@ -41,6 +41,14 @@ class TestToDict:
         d = InstagramAccount.from_dict(_base_dict(website_clicks=None)).to_dict(without_none_field=True)
         assert "website_clicks" not in d
 
+    def test_biography_newlines_replaced_with_literal(self):
+        d = InstagramAccount.from_dict(_base_dict(biography="line1\nline2\nline3")).to_dict()
+        assert d["biography"] == "line1\\nline2\\nline3"
+
+    def test_biography_none_remains_none(self):
+        d = InstagramAccount.from_dict(_base_dict(biography=None)).to_dict()
+        assert d["biography"] is None
+
 
 class TestToJson:
     def test_valid_json(self):

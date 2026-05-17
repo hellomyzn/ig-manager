@@ -81,6 +81,14 @@ class TestToDict:
         media = InstagramMedia.from_dict(_base_dict(hashtags=[]))
         assert media.to_dict()["hashtags"] == ""
 
+    def test_caption_newlines_replaced_with_literal(self):
+        media = InstagramMedia.from_dict(_base_dict(caption="line1\nline2\nline3"))
+        assert media.to_dict()["caption"] == "line1\\nline2\\nline3"
+
+    def test_caption_none_remains_none(self):
+        media = InstagramMedia.from_dict(_base_dict(caption=None))
+        assert media.to_dict()["caption"] is None
+
 
 class TestToJson:
     def test_to_json_is_valid_json(self):

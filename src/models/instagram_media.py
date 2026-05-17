@@ -65,7 +65,7 @@ class InstagramMedia(Model):
         d = {
             "id": self.id,
             "timestamp": self.timestamp,
-            "caption": self.caption,
+            "caption": self.caption.replace("\n", "\\n") if self.caption else self.caption,
             "media_type": self.media_type,
             "media_product_type": self.media_product_type,
             "permalink": self.permalink,

@@ -35,7 +35,7 @@ class InstagramAccount(Model):
     def to_dict(self, without_none_field: bool = False) -> dict:
         d = {
             "username": self.username,
-            "biography": self.biography,
+            "biography": self.biography.replace("\n", "\\n") if self.biography else self.biography,
             "followers_count": self.followers_count,
             "follows_count": self.follows_count,
             "media_count": self.media_count,

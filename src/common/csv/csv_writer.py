@@ -1,7 +1,6 @@
 """common.csv.csv_writer"""
 import csv
 import os
-from typing import Optional
 
 
 def write(filepath: str, rows: list, mode: str = "w") -> None:
@@ -23,26 +22,6 @@ def write(filepath: str, rows: list, mode: str = "w") -> None:
         if need_header:
             writer.writeheader()
         writer.writerows(rows)
-
-
-def read_last_fetched(filepath: str, id_col: str = "id") -> dict:
-    """各 ID の最終 fetched_at を返す。
-
-    Args:
-        filepath: 読み込む CSV ファイルパス
-        id_col: ID カラム名
-
-    Returns:
-        {id: fetched_at} の辞書（ファイルが存在しない場合は空辞書）
-    """
-    if not os.path.exists(filepath) or not _file_has_content(filepath):
-        return {}
-
-    result = {}
-    with open(filepath, newline="", encoding="utf-8") as f:
-        for row in csv.DictReader(f):
-            result[row[id_col]] = row["fetched_at"]
-    return result
 
 
 def _file_has_content(filepath: str) -> bool:

@@ -1,7 +1,7 @@
 """tests.test_csv_writer"""
 import csv
 import pytest
-from common.csv.csv_writer import write, read_last_fetched
+from common.csv.csv_writer import write
 
 
 class TestWrite:
@@ -43,28 +43,3 @@ class TestWrite:
         path = tmp_path / "out.csv"
         write(str(path), [], mode="w")
         assert not path.exists() or path.stat().st_size == 0
-
-
-class TestReadLastFetched:
-    def test_returns_last_fetched_per_id(self, tmp_path):
-        path = tmp_path / "snap.csv"
-        rows = [
-            {"id": "1", "fetched_at": "2026-05-17T10:00:00"},
-            {"id": "1", "fetched_at": "2026-05-17T11:00:00"},
-            {"id": "2", "fetched_at": "2026-05-17T09:00:00"},
-        ]
-        write(str(path), rows, mode="w")
-        result = read_last_fetched(str(path), id_col="id")
-        assert result["1"] == "2026-05-17T11:00:00"
-        assert result["2"] == "2026-05-17T09:00:00"
-
-    def test_returns_empty_dict_when_file_not_exists(self, tmp_path):
-        path = tmp_path / "missing.csv"
-        result = read_last_fetched(str(path), id_col="id")
-        assert result == {}
-
-    def test_returns_empty_dict_when_file_is_empty(self, tmp_path):
-        path = tmp_path / "empty.csv"
-        path.touch()
-        result = read_last_fetched(str(path), id_col="id")
-        assert result == {}

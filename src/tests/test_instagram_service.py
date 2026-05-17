@@ -6,7 +6,6 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 from models.instagram_media import InstagramMedia
-from models.instagram_story import InstagramStory
 from models.instagram_account import InstagramAccount
 from services.instagram_service import InstagramService
 
@@ -25,14 +24,6 @@ def _make_media(media_id="m1", minutes_ago=30, media_product_type="FEED"):
     })
 
 
-def _make_story():
-    ts = datetime.now(timezone.utc).isoformat()
-    return InstagramStory.from_dict({
-        "id": "s1", "timestamp": ts, "media_url": None, "permalink": None,
-        "reach": 50, "replies": 2, "fetched_at": ts,
-    })
-
-
 def _make_account():
     ts = datetime.now(timezone.utc).isoformat()
     return InstagramAccount.from_dict({
@@ -47,7 +38,6 @@ def _make_account():
 def mock_repo():
     repo = MagicMock()
     repo.fetch_medias.return_value = [_make_media("m1", minutes_ago=30)]
-    repo.fetch_stories.return_value = [_make_story()]
     repo.fetch_account.return_value = _make_account()
     return repo
 
@@ -65,27 +55,40 @@ class TestRun:
         svc.run()
         assert (tmp_path / "media.csv").exists()
 
-    def test_creates_stories_csv(self, service):
-        svc, tmp_path = service
-        svc.run()
-        assert (tmp_path / "stories.csv").exists()
-
     def test_creates_account_snapshots_csv(self, service):
         svc, tmp_path = service
         svc.run()
         assert (tmp_path / "account_snapshots.csv").exists()
 
-    def test_appends_media_snapshot_for_new_post(self, service):
+    def test_creates_media_snapshots_csv(self, service):
         svc, tmp_path = service
         svc.run()
-        snap_path = tmp_path / "media_snapshots.csv"
-        assert snap_path.exists()
-        with open(snap_path) as f:
+        assert (tmp_path / "media_snapshots.csv").exists()
+
+    def test_stories_csv_not_created(self, service):
+        svc, tmp_path = service
+        svc.run()
+        assert not (tmp_path / "stories.csv").exists()
+
+    def test_media_snapshot_contains_correct_columns(self, service):
+        svc, tmp_path = service
+        svc.run()
+        with open(tmp_path / "media_snapshots.csv") as f:
             rows = list(csv.DictReader(f))
         assert len(rows) == 1
         assert rows[0]["id"] == "m1"
+        assert "like_count" in rows[0]
+        assert "reach" in rows[0]
 
-    def test_account_snapshots_appends_on_second_run(self, service):
+    def test_media_snapshots_appended_on_every_run(self, service):
+        svc, tmp_path = service
+        svc.run()
+        svc.run()
+        with open(tmp_path / "media_snapshots.csv") as f:
+            rows = list(csv.DictReader(f))
+        assert len(rows) == 2
+
+    def test_account_snapshots_appended_on_every_run(self, service):
         svc, tmp_path = service
         svc.run()
         svc.run()
@@ -93,40 +96,10 @@ class TestRun:
             rows = list(csv.DictReader(f))
         assert len(rows) == 2
 
-
-class TestPhaseLogic:
-    def test_snapshot_skipped_when_too_recent(self, tmp_path, mock_repo):
-        """前回取得から間隔が短い場合はスナップショットを追記しない。"""
-        recent_ts = (datetime.now(timezone.utc) - timedelta(minutes=5)).isoformat()
-        snap_path = tmp_path / "media_snapshots.csv"
-        with open(snap_path, "w", newline="") as f:
-            writer = csv.DictWriter(f, fieldnames=["id", "fetched_at"])
-            writer.writeheader()
-            writer.writerow({"id": "m1", "fetched_at": recent_ts})
-
-        mock_repo.fetch_medias.return_value = [_make_media("m1", minutes_ago=30)]
-        with patch("services.instagram_service.InstagramRepository", return_value=mock_repo):
-            svc = InstagramService(data_dir=str(tmp_path))
+    def test_media_csv_overwritten_on_every_run(self, service):
+        svc, tmp_path = service
         svc.run()
-
-        with open(snap_path) as f:
+        svc.run()
+        with open(tmp_path / "media.csv") as f:
             rows = list(csv.DictReader(f))
         assert len(rows) == 1
-
-    def test_snapshot_taken_when_interval_elapsed(self, tmp_path, mock_repo):
-        """前回取得から十分な時間が経過していればスナップショットを追記する。"""
-        old_ts = (datetime.now(timezone.utc) - timedelta(minutes=20)).isoformat()
-        snap_path = tmp_path / "media_snapshots.csv"
-        with open(snap_path, "w", newline="") as f:
-            writer = csv.DictWriter(f, fieldnames=["id", "fetched_at"])
-            writer.writeheader()
-            writer.writerow({"id": "m1", "fetched_at": old_ts})
-
-        mock_repo.fetch_medias.return_value = [_make_media("m1", minutes_ago=30)]
-        with patch("services.instagram_service.InstagramRepository", return_value=mock_repo):
-            svc = InstagramService(data_dir=str(tmp_path))
-        svc.run()
-
-        with open(snap_path) as f:
-            rows = list(csv.DictReader(f))
-        assert len(rows) == 2
