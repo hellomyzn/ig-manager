@@ -21,14 +21,11 @@ class InstagramMedia(Model):
     is_comment_enabled: bool
     hashtags: list
     reach: Optional[int]
-    impressions: Optional[int]
     saved: Optional[int]
     shares: Optional[int]
     profile_visits: Optional[int]
     follows: Optional[int]
     total_interactions: Optional[int]
-    plays: Optional[int]
-    video_views: Optional[int]
     fetched_at: str
 
     @property
@@ -56,14 +53,11 @@ class InstagramMedia(Model):
             is_comment_enabled=bool(dict_["is_comment_enabled"]),
             hashtags=hashtags,
             reach=_int_or_none(dict_.get("reach")),
-            impressions=_int_or_none(dict_.get("impressions")),
             saved=_int_or_none(dict_.get("saved")),
             shares=_int_or_none(dict_.get("shares")),
             profile_visits=_int_or_none(dict_.get("profile_visits")),
             follows=_int_or_none(dict_.get("follows")),
             total_interactions=_int_or_none(dict_.get("total_interactions")),
-            plays=_int_or_none(dict_.get("plays")),
-            video_views=_int_or_none(dict_.get("video_views")),
             fetched_at=dict_["fetched_at"],
         )
 
@@ -82,14 +76,11 @@ class InstagramMedia(Model):
             "is_comment_enabled": self.is_comment_enabled,
             "hashtags": ",".join(self.hashtags),
             "reach": self.reach,
-            "impressions": self.impressions,
             "saved": self.saved,
             "shares": self.shares,
             "profile_visits": self.profile_visits,
             "follows": self.follows,
             "total_interactions": self.total_interactions,
-            "plays": self.plays,
-            "video_views": self.video_views,
             "fetched_at": self.fetched_at,
         }
         if without_none_field:

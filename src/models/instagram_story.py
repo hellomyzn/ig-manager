@@ -13,11 +13,7 @@ class InstagramStory(Model):
     media_url: Optional[str]
     permalink: Optional[str]
     reach: Optional[int]
-    impressions: Optional[int]
     replies: Optional[int]
-    taps_forward: Optional[int]
-    taps_back: Optional[int]
-    exits: Optional[int]
     fetched_at: str
 
     @classmethod
@@ -28,11 +24,7 @@ class InstagramStory(Model):
             media_url=dict_.get("media_url"),
             permalink=dict_.get("permalink"),
             reach=_int_or_none(dict_.get("reach")),
-            impressions=_int_or_none(dict_.get("impressions")),
             replies=_int_or_none(dict_.get("replies")),
-            taps_forward=_int_or_none(dict_.get("taps_forward")),
-            taps_back=_int_or_none(dict_.get("taps_back")),
-            exits=_int_or_none(dict_.get("exits")),
             fetched_at=dict_["fetched_at"],
         )
 
@@ -43,11 +35,7 @@ class InstagramStory(Model):
             "media_url": self.media_url,
             "permalink": self.permalink,
             "reach": self.reach,
-            "impressions": self.impressions,
             "replies": self.replies,
-            "taps_forward": self.taps_forward,
-            "taps_back": self.taps_back,
-            "exits": self.exits,
             "fetched_at": self.fetched_at,
         }
         if without_none_field:

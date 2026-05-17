@@ -11,11 +11,7 @@ def _base_dict(**kwargs):
         "media_url": "https://example.com/story.mp4",
         "permalink": "https://www.instagram.com/stories/user/s1/",
         "reach": 50,
-        "impressions": 80,
         "replies": 2,
-        "taps_forward": 10,
-        "taps_back": 3,
-        "exits": 1,
         "fetched_at": "2026-05-17T21:05:00+0900",
     }
     base.update(kwargs)
@@ -40,11 +36,11 @@ class TestToDict:
     def test_returns_all_fields(self):
         d = InstagramStory.from_dict(_base_dict()).to_dict()
         assert d["id"] == "s1"
-        assert d["taps_forward"] == 10
+        assert d["reach"] == 50
 
     def test_without_none_field(self):
-        d = InstagramStory.from_dict(_base_dict(exits=None)).to_dict(without_none_field=True)
-        assert "exits" not in d
+        d = InstagramStory.from_dict(_base_dict(replies=None)).to_dict(without_none_field=True)
+        assert "replies" not in d
 
 
 class TestToJson:

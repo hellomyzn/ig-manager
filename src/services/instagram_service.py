@@ -7,7 +7,7 @@ from common.csv import write, read_last_fetched
 from common.log import info, warn
 from repositories.instagram_repository import InstagramRepository
 
-_DEFAULT_DATA_DIR = "data"
+_DEFAULT_DATA_DIR = os.environ.get("DATA_DIR", "data")
 
 _PHASE_INTERVALS = [
     (timedelta(hours=1),  timedelta(minutes=15)),
@@ -18,9 +18,8 @@ _PHASE_INTERVALS = [
 
 _SNAPSHOT_COLS = [
     "id", "fetched_at", "like_count", "comments_count",
-    "reach", "impressions", "saved", "shares",
+    "reach", "saved", "shares",
     "profile_visits", "follows", "total_interactions",
-    "plays", "video_views",
 ]
 
 

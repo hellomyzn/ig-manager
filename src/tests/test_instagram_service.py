@@ -19,9 +19,9 @@ def _make_media(media_id="m1", minutes_ago=30, media_product_type="FEED"):
         "permalink": "https://ig.com/p/1/", "media_url": None,
         "thumbnail_url": None, "like_count": 5, "comments_count": 1,
         "is_comment_enabled": True, "hashtags": ["#test"],
-        "reach": 100, "impressions": 200, "saved": 5, "shares": 3,
+        "reach": 100, "saved": 5, "shares": 3,
         "profile_visits": 8, "follows": 1, "total_interactions": 20,
-        "plays": None, "video_views": None, "fetched_at": ts,
+        "fetched_at": ts,
     })
 
 
@@ -29,8 +29,7 @@ def _make_story():
     ts = datetime.now(timezone.utc).isoformat()
     return InstagramStory.from_dict({
         "id": "s1", "timestamp": ts, "media_url": None, "permalink": None,
-        "reach": 50, "impressions": 80, "replies": 2,
-        "taps_forward": 10, "taps_back": 3, "exits": 1, "fetched_at": ts,
+        "reach": 50, "replies": 2, "fetched_at": ts,
     })
 
 
@@ -39,7 +38,7 @@ def _make_account():
     return InstagramAccount.from_dict({
         "username": "user", "biography": "bio",
         "followers_count": 1000, "follows_count": 200, "media_count": 50,
-        "impressions": 5000, "reach": 3000, "profile_views": 400,
+        "reach": 3000, "profile_views": 400,
         "website_clicks": 30, "fetched_at": ts,
     })
 

@@ -23,6 +23,7 @@ start:
 	@make up
 	@make login
 run:
+	@mkdir -p ../../footprints/instagram
 	@make up
 	@echo "Waiting for container to be ready..."
 	@sleep 2

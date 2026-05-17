@@ -13,7 +13,6 @@ class InstagramAccount(Model):
     followers_count: int
     follows_count: int
     media_count: int
-    impressions: Optional[int]
     reach: Optional[int]
     profile_views: Optional[int]
     website_clicks: Optional[int]
@@ -27,7 +26,6 @@ class InstagramAccount(Model):
             followers_count=int(dict_["followers_count"]),
             follows_count=int(dict_["follows_count"]),
             media_count=int(dict_["media_count"]),
-            impressions=_int_or_none(dict_.get("impressions")),
             reach=_int_or_none(dict_.get("reach")),
             profile_views=_int_or_none(dict_.get("profile_views")),
             website_clicks=_int_or_none(dict_.get("website_clicks")),
@@ -41,7 +39,6 @@ class InstagramAccount(Model):
             "followers_count": self.followers_count,
             "follows_count": self.follows_count,
             "media_count": self.media_count,
-            "impressions": self.impressions,
             "reach": self.reach,
             "profile_views": self.profile_views,
             "website_clicks": self.website_clicks,

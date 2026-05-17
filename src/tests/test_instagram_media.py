@@ -19,14 +19,11 @@ def _base_dict(**kwargs):
         "is_comment_enabled": True,
         "hashtags": ["#test", "#photo"],
         "reach": 100,
-        "impressions": 200,
         "saved": 5,
         "shares": 3,
         "profile_visits": 8,
         "follows": 1,
         "total_interactions": 21,
-        "plays": None,
-        "video_views": None,
         "fetched_at": "2026-05-17T21:05:00+0900",
     }
     base.update(kwargs)
@@ -46,7 +43,6 @@ class TestFromDict:
             media_url=None,
             thumbnail_url=None,
             reach=None,
-            plays=None,
         ))
         assert media.caption is None
         assert media.reach is None
@@ -73,10 +69,9 @@ class TestToDict:
         assert d["hashtags"] == "#test,#photo"
 
     def test_to_dict_without_none_field(self):
-        media = InstagramMedia.from_dict(_base_dict(plays=None, video_views=None))
+        media = InstagramMedia.from_dict(_base_dict(profile_visits=None))
         d = media.to_dict(without_none_field=True)
-        assert "plays" not in d
-        assert "video_views" not in d
+        assert "profile_visits" not in d
 
     def test_to_dict_hashtags_as_csv_string(self):
         media = InstagramMedia.from_dict(_base_dict(hashtags=["#x", "#y"]))

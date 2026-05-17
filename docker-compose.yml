@@ -20,10 +20,14 @@ services:
       - .env
     environment:
       - TZ=${TZ-Asia/Tokyo}
+      - DATA_DIR=/opt/footprints/instagram
     volumes:
       - type: bind
         source: ${PROJECT_DIR-./src}/
         target: ${WORKDIR-/opt/work}
+      - type: bind
+        source: ${FOOTPRINTS_DIR-../../footprints/instagram}
+        target: /opt/footprints/instagram
     networks:
       - internal_network
 

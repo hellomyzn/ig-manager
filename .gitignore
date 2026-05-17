@@ -17,6 +17,5 @@ docs/sphinx/build
 !/src/src/**/.gitkeep
 src/common/config/config.ini
 src/common/config/config.dev.ini
-src/data/
 
 .devcontainer/infra/docker/ssh-stub/ssh/id*
