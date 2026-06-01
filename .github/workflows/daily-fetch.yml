@@ -8,11 +8,16 @@ on:
 jobs:
   fetch:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
 
     steps:
       - uses: actions/checkout@v4
+
+      - name: Checkout footprints repository
+        uses: actions/checkout@v4
+        with:
+          repository: hellomyzn/footprints
+          path: footprints
+          token: ${{ secrets.FOOTPRINTS_PAT }}
 
       - uses: actions/setup-python@v5
         with:
@@ -41,14 +46,15 @@ jobs:
 
       - name: Fetch Instagram data
         run: |
-          mkdir -p data src/logs
-          cd src && DATA_DIR=../data PYTHONPATH=. python main.py
+          mkdir -p footprints/instagram src/logs
+          cd src && DATA_DIR=../footprints/instagram PYTHONPATH=. python main.py
 
-      - name: Commit and push CSV files
+      - name: Commit and push to footprints
+        working-directory: footprints
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/
+          git add instagram/
           git diff --staged --quiet && echo "No changes to commit" || (
             git commit -m "data: daily fetch $(date -u '+%Y-%m-%d')" &&
             git push
