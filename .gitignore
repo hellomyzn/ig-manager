@@ -1,3 +1,6 @@
+# Data (managed in footprints repository)
+data/
+
 # 環境ファイル
 .env
 *.DS_Store
